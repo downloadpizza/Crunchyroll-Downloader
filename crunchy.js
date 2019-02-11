@@ -1,6 +1,7 @@
 const request = require("request");
 const { spawn } = require('child_process');
 const fs = require('fs');
+const _cliProgress = require('cli-progress');
 
 main();
 
@@ -19,7 +20,6 @@ function download(url) {
         headers: {}
     };
     const outname = url.replace(/https?:\/\/.+\..+\/[a-z]+-[a-z]+\//, "").replace(/[^a-zA-Z0-9]/g, "_")+'.mkv';
-    console.log(outname);
 
     request.get(options, function (error, response, body) {
         if (error) {
@@ -34,7 +34,7 @@ function download(url) {
         const test = body.substring(body.search(start) + start.length, body.search(end) - 7);
         let langs = {};
         const meta = JSON.parse(test);
-        duration = Math.floor(meta.metadata.duration/1000);
+        duration = Math.floor(meta.metadata.duration);
 
         const streams = meta.streams;
         for (let i in streams) {
@@ -54,14 +54,20 @@ function download(url) {
 
         let ffmpeg = spawn("ffmpeg", ['-hide_banner', '-v', 'quiet', '-stats', '-i', url, '-c', 'copy', outname]);
         const durationstr = pad(Math.floor(duration/60/60)) + ':' + pad(Math.floor(duration/60)) + ':' + pad(duration%60);
+
+        const bar1 = new _cliProgress.Bar({}, _cliProgress.Presets.shades_classic);
+        console.log("Downloading to: ", outname);
+        bar1.start(duration, 0);
+
         ffmpeg.stderr.on('data', (data) => {
-
             let timestr = data.toString().substr(data.toString().search(/[0-9]{2}:[0-9]{2}:[0-9]{2}/),8);
-
-            console.log(timestr, ' of ', durationstr);
+            let timearr = timestr.split(":");
+            time = 1000*(parseInt(timearr[0])*60*60 + parseInt(timearr[1])*60 + parseInt(timearr[2]));
+            bar1.update(time);
         });
 
         ffmpeg.on('close', (code) => {
+            bar1.stop();
             console.log(`ffmpeg exited with code ${code}`);
         });
     }
