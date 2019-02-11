@@ -1,5 +1,6 @@
 const request = require("request");
 const { spawn } = require('child_process');
+const fs = require('fs');
 
 main();
 
@@ -35,6 +36,9 @@ function download(url) {
         const streams = meta.streams;
         for (let i in streams) {
             langs[streams[i].hardsub_lang] = streams[i].url
+        }
+        if (fs.existsSync(outname)) {
+            fs.unlinkSync(outname);
         }
         getStream(langs["enUS"])
     });
