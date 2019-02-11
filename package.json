@@ -3,12 +3,6 @@
   "version": "1.0.0",
   "dependencies": {
     "cli-progress": "^2.1.1",
-    "ffmpeg": "0.0.4",
-    "hls-download": "^1.7.1",
-    "log-update": "^2.3.0",
-    "m3u8-parsed": "^1.2.0",
-    "m3u8-parser": "^4.3.0",
-    "request": "^2.88.0",
-    "yargs": "^12.0.5"
+    "request": "^2.88.0"
   }
 }

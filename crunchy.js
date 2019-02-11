@@ -1,7 +1,7 @@
 const request = require("request");
 const { spawn } = require('child_process');
 const fs = require('fs');
-const _cliProgress = require('cli-progress');
+const cliProgress = require('cli-progress');
 
 main();
 
@@ -27,7 +27,7 @@ function download(url) {
         }
         const start = "vilos.config.media = ";
         const end = "vilos.config.analytics = ";
-        if(body.search(start)==-1 || body.search(end)==-1) {
+        if(body.search(start)===-1 || body.search(end)===-1) {
             console.log('error');
             return
         }
@@ -55,7 +55,7 @@ function download(url) {
         let ffmpeg = spawn("ffmpeg", ['-hide_banner', '-v', 'quiet', '-stats', '-i', url, '-c', 'copy', outname]);
         const durationstr = pad(Math.floor(duration/60/60)) + ':' + pad(Math.floor(duration/60)) + ':' + pad(duration%60);
 
-        const bar1 = new _cliProgress.Bar({}, _cliProgress.Presets.shades_classic);
+        const bar1 = new cliProgress.Bar({}, cliProgress.Presets.shades_classic);
         console.log("Downloading to: ", outname);
         bar1.start(duration, 0);
 
