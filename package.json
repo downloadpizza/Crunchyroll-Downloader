@@ -2,11 +2,11 @@
   "name": "Crunchyroll_Downloader",
   "version": "1.0.0",
   "dependencies": {
-    "parse5": "^5.1.0",
+    "ffmpeg": "0.0.4",
+    "hls-download": "^1.7.1",
+    "m3u8-parsed": "^1.2.0",
+    "m3u8-parser": "^4.3.0",
     "request": "^2.88.0",
-    "xmldom": "^0.1.27",
-    "xmlserializer": "^0.6.1",
-    "xpath": "0.0.27",
     "yargs": "^12.0.5"
   }
 }
