@@ -13,6 +13,7 @@ function main() {
 }
 
 function download(url) {
+    let duration = -1;
     const options = {
         url: url,
         headers: {}
@@ -33,6 +34,8 @@ function download(url) {
         const test = body.substring(body.search(start) + start.length, body.search(end) - 7);
         let langs = {};
         const meta = JSON.parse(test);
+        duration = Math.floor(meta.metadata.duration/1000);
+
         const streams = meta.streams;
         for (let i in streams) {
             langs[streams[i].hardsub_lang] = streams[i].url
@@ -44,13 +47,18 @@ function download(url) {
     });
 
     function getStream(url) {
-        let ffmpeg = spawn("ffmpeg", ['-hide_banner', '-v', 'quiet', '-stats', '-i', url, '-c', 'copy', outname]);
-        ffmpeg.stdout.on('data', (data) => {
-            console.log(`${data}`);
-        });
+        function pad(num) {
+            var s = "0" + num;
+            return s.substr(s.length-2);
+        }
 
+        let ffmpeg = spawn("ffmpeg", ['-hide_banner', '-v', 'quiet', '-stats', '-i', url, '-c', 'copy', outname]);
+        const durationstr = pad(Math.floor(duration/60/60)) + ':' + pad(Math.floor(duration/60)) + ':' + pad(duration%60);
         ffmpeg.stderr.on('data', (data) => {
-            console.log(`${data}`);
+
+            let timestr = data.toString().substr(data.toString().search(/[0-9]{2}:[0-9]{2}:[0-9]{2}/),8);
+
+            console.log(timestr, ' of ', durationstr);
         });
 
         ffmpeg.on('close', (code) => {
