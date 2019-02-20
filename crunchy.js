@@ -19,7 +19,7 @@ function download(url) {
         url: url,
         headers: {}
     };
-    const outname = url.replace(/https?:\/\/.+\..+\/[a-z]+-[a-z]+\//, "").replace(/[^a-zA-Z0-9]/g, "_")+'.mkv';
+    const outname = url.replace(/https?:\/\/.+\.[a-z]+(\/[a-z-]{0,5})?\//, "").replace(/[^a-zA-Z0-9]/g, "_")+'.mkv';
 
     request.get(options, function (error, response, body) {
         if (error) {
